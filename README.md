@@ -4,7 +4,7 @@
 
 - pic
 - bingo card container
-- place to write the spaker info
+- place to write the speaker info
 - modal to select type/language of game and start
 - quit button
 - number correct in a row
@@ -16,10 +16,10 @@
 
 * load array of pix into state
 * randomize it (maybe before loading it)
-* call populate card from the state
+* call populate card from the state - all done
 
 #### functions needed:
 
 - read array, and randomize it, then load into state
-- start game (call others)
+- start game (calls randomizer, sets gameOn to true, calls forvo function, )
 - check if winner
