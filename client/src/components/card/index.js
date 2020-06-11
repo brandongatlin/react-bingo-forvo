@@ -1,35 +1,27 @@
-import React, { useState, useEffect } from "react";
-
+import React from "react";
 import Pic from "../pic";
 
-const pics = require("../../foods");
+const Card = ({order, id, correct, wrong, validate}) => {
 
-const Card = props => {
-  const [randomizedPix, setRandomized] = useState([]);
+  return (
+    <div id={id} className='bingoCard'>
+      {
+        order.map(pic => {
+          return (
+            <Pic 
+            key={pic.id} 
+            id={pic.id} 
+            className={correct.includes(pic.id) ? 'bingoPic-correct' : wrong.includes(pic.id) ? 'bingoPic-wrong' : 'bingoPic'} 
+            alt={pic.name} 
+            src={pic.url} 
+            validate={validate}
+            />
+          )
+        })
+      }
+    </div>
+  )
 
-  const randomizer = data => {
-    let i = data.length - 1;
-    while (i > 0) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const temp = data[i];
-      data[i] = data[j];
-      data[j] = temp;
-      i--;
-    }
-
-    useEffect(() => {
-      return setRandomized(data);
-    });
-  };
-
-  // import start, then use it to call randomizer/start game & randomizer
-  randomizer(pics);
-
-  return randomizedPix.map(pic => {
-    return (
-      <Pic key={pic.name} className='bingoPic' alt={pic.name} src={pic.url} />
-    );
-  });
 };
 
 export default Card;

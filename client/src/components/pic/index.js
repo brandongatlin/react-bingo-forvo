@@ -1,9 +1,14 @@
 import React from "react";
 
-const Pic = props => {
+const Pic = ({id, className, alt, src, validate}) => {
   return (
-    <div className='picContainer'>
-      <img className={props.className} alt={props.alt} src={props.src} />
+    <div className={className}>
+      <img 
+      id={id}
+      alt={alt} 
+      src={src} 
+      onClick={validate}
+      />
     </div>
   );
 };

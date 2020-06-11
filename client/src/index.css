@@ -12,11 +12,30 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-area: card;
+    gap: 10px;
 }
 
-.bingoPic {
-    width: 100px;
-    height: 100px;
+div[class^='bingoPic'] {
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid black;
+}
+
+div[class^='bingoPic']:hover {
+    background-color: yellow;
+}
+
+div[class^='bingoPic']>img {
+    width: 150px;
+    height: 150px;
+}
+
+.bingoPic-correct {
+    background-color: green;
+}
+
+.bingoPic-wrong {
+    background-color: pink;
 }
 
 .picContainer {
