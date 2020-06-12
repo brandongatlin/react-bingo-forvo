@@ -1,11 +1,15 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import "./App.css";
 import jsonp from 'jsonp';
 import shuffle from 'lodash.shuffle';
+import {checkWinner} from './utils';
 
 import ReactAudioPlayer from 'react-audio-player';
 import Card from "./components/card";
 import {BilingualOptions} from './components/options';
+import MessageBox from './components/messageBox';
+import StatsBox from './components/statsBox';
+
 
 const pics = require("./foods");
 
@@ -21,8 +25,10 @@ const App = props => {
   let [currentAnswer, setCurrentAnswer] = useState('');
   let [srcMp3, setSrcMp3] = useState('');
   let [srcOgg, setSrcOgg] = useState('');
+  const [dataOrderSelected, setDataOrderSelected] = useState([]);
   const [correct, setCorrect] = useState([]);
   const [wrong, setWrong] = useState([]);
+  let [currentMessage, setCurrentMessage] = useState('Study the card, then click "start" to begin');
  
 
   const callNextWord = () => {
@@ -31,27 +37,41 @@ const App = props => {
     const currentWord = callOrder[called].name;
     setCurrentAnswer(callOrder[called].id);
 
+    console.log(currentWord)
+
         jsonp(`https://apifree.forvo.com/action/word-pronunciations/format/json/word/${currentWord}/id_lang_speak/39/order/date-desc/limit/5/key/${apiKey}`, null, (err, data)=> {
       const mp3Src = data.items[0].pathmp3;
       const oggSrc = data.items[0].pathogg;
       setSrcMp3(mp3Src);
       setSrcOgg(oggSrc);
+      const msg = `Speaker ${data.items[0].username} is from ${data.items[0].country}`
+      setCurrentMessage(msg);
       setCalled(called + 1);
 
     });
   }
 
+  useEffect(()=> {
+        if (checkWinner(dataOrderSelected)) {
+          alert('winner!');
+        }
+      }, [dataOrderSelected])
+
   const validate = (e) => {
     const chosen = e.target.id;
+    const dataOrderChosen = e.target.getAttribute('data-order');
 
     if(currentAnswer === chosen){
       setCorrect([...correct, currentAnswer]);
+      setDataOrderSelected([...dataOrderSelected, dataOrderChosen]);
     } else {
       setWrong([...wrong, chosen]);
     }
 
     if(called < callOrder.length){
       callNextWord();
+    } else {
+      alert('game over');
     }
   }
 
@@ -60,7 +80,10 @@ const App = props => {
     
     return (
       <div id='gameBoard'>
-        <div onClick={callNextWord} >CLICK 2 BEGIN</div>
+        <StatsBox 
+          click={callNextWord}
+          text={'CLICK 2 BEGIN'}
+        />
         <Card 
           id='bingoCard' 
           order={randomizedPix} 
@@ -69,9 +92,10 @@ const App = props => {
           validate={validate}/>
         <div>
            <ReactAudioPlayer 
-            autoPlay 
-            src={srcOgg}
+              autoPlay 
+              src={srcOgg}
            />
+           <MessageBox message={currentMessage}/>
         </div>
       </div>
     )
